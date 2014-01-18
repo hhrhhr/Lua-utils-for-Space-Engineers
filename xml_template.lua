@@ -15,7 +15,7 @@ xml[1] = [[
 ]]
 
 xml[2] = [[
-<bitmap id="%d" name="MinerWars-%s.png" size="%dx%d" />
+<bitmap id="%d" name="MinerWars_%d-%s.png" size="%dx%d" />
 ]]
 
 xml[3] = [[
@@ -40,7 +40,7 @@ content[1] = function(color, base, height, size)
 end
 
 content[2] = function(id, color, width, height)
-    return string.format(xml[2], id, color, width, height)
+    return string.format(xml[2], id, id, color, width, height)
 end
 
 content[3] = function()
@@ -60,7 +60,9 @@ function generate_xml(filename, config)
     local fn = filename .. "-" .. config.color .. ".xml"
     local w = assert(io.open(fn, "w+"))
     w:write(content[1](config.color, config.base, config.height, config.size))
-    w:write(content[2](config.id, config.color, config.tex_width, config.tex_height))
+    for k, v in ipairs(config.bitmap) do
+        w:write(content[2](v, config.color, config.tex_width, config.tex_height))
+    end
     w:write(content[3]())
     for k, v in ipairs(config.glyph) do
         w:write(content[4](v.ch, v.code, v.bm, v.x, v.y, v.sx, v.sy, v.aw, v.lsb))

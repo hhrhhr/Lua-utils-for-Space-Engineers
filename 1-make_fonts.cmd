@@ -1,31 +1,37 @@
 @echo off
+
+set BLUR=0x2
+set LEVEL=0x90%%
+set color=#E43E3E-red- #65B25B-green- #93D0ED-blue- #FFFFFF-white-
+
+
 setlocal enabledelayedexpansion
 
 if exist MinerWars*.* del /q /f MinerWars*.*
 
-
 echo generate bitmap and bmfc...
 bmfont -c bmfont.bmfc -o MinerWars.fnt
 
+for /r %%i in ("MinerWars_?.png") do (
+    set m=%%~ni
 
-set color=#E43E3E-red- #65B25B-green- #93D0ED-blue- #FFFFFF-white-
+    echo make base bitmap...
+    convert %%i -alpha off !m!-white.png
+    
+    echo make alpha...
+    convert.exe !m!-white.png ^( +clone -blur %BLUR% -level %LEVEL% ^) -compose Plus -composite !m!-alpha.png
+    
+    for %%c in (%color%) do (
+        set p=%%c
+        set hex=!p:~,7!
+        set name=!p:~7,-1!
 
-echo make base bitmap...
-convert MinerWars_0.png -alpha off MinerWars-white.png
-
-echo make alpha...
-convert.exe MinerWars-white.png ( +clone -blur 0x5 -level 0x75%% ) -compose Plus -composite MinerWars-alpha.png
-
-for %%c in (%color%) do (
-    set p=%%c
-    set hex=!p:~,7!
-    set name=!p:~7,-1!
-    echo make MinerWars!name!...
-    convert MinerWars-white.png +level-colors !hex! -mask MinerWars-white.png -fill black -opaque !hex! +mask MinerWars!name!.png
-    convert MinerWars!name!.png MinerWars-alpha.png -compose CopyOpacity -composite MinerWars!name!.png
+        echo make MinerWars!name!...
+        convert !m!-white.png +level-colors !hex! -mask !m!-white.png -fill black -opaque !hex! +mask !m!!name!.png
+        convert !m!!name!.png !m!-alpha.png -compose CopyOpacity -composite !m!!name!.png
+    )
+    del /q /f !m!-alpha.png
 )
-
-del /q /f MinerWars-alpha.png
 
 
 echo generate xmls...

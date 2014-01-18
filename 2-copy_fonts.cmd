@@ -2,10 +2,10 @@
 
 set D=f:\lalala\Space Engineers\Content\Fonts
 
-copy /y MinerWars-blue.png  "%D%\MinerWars-blue\"
-copy /y MinerWars-green.png "%D%\MinerWars-green\"
-copy /y MinerWars-red.png   "%D%\MinerWars-red\"
-copy /y MinerWars-white.png "%D%\MinerWars-white\"
+copy /y MinerWars_?-blue.png  "%D%\MinerWars-blue\"
+copy /y MinerWars_?-green.png "%D%\MinerWars-green\"
+copy /y MinerWars_?-red.png   "%D%\MinerWars-red\"
+copy /y MinerWars_?-white.png "%D%\MinerWars-white\"
 
 copy /y MinerWars-blue.xml  "%D%\MinerWars-blue\MinerWars.xml"
 copy /y MinerWars-green.xml "%D%\MinerWars-green\MinerWars.xml"

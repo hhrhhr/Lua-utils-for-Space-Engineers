@@ -36,33 +36,59 @@ end
 
 
 
-local config = {}
-
 local r = assert(io.open(font_desc))
+
 local t = {}
-for i = 1, 4 do
+-- first and second lines
+for i = 1, 2 do
     local line = r:read("*l")
     for k, v in string.gmatch(line, "(%w+)=(%w+)") do
         t[k] = tonumber(v)
     end
 end
+
+-- page line
+t.page = {}
+for i = 1, t.pages do
+    local tt = {}
+    local line = r:read("*l")
+    for k, v in string.gmatch(line, "(%w+)=(%w+)") do
+        tt[k] = tonumber(v)
+    end
+    table.insert(t.page, tt)
+end
+
+-- char count
+local line = r:read("*l")
+for k, v in string.gmatch(line, "(%w+)=(%w+)") do
+    t[k] = tonumber(v)
+end
+
+-- chars
 t.char = {}
 for i = 1, t.count do
-    local g = {}
+    local tt = {}
     local line = r:read("*l")
     for k, v in string.gmatch(line, "(%a+)=([-%d]+)") do
-        g[k] = tonumber(v)
+        tt[k] = tonumber(v)
     end
-    table.insert(t.char, g)
+    table.insert(t.char, tt)
 end
+
 r:close()
 
+
+local config = {}
 config.base = t.base
 config.height = t.lineHeight
 config.size = t.size
-config.id = t.pages-1
 config.tex_width = t.scaleW
 config.tex_height = t.scaleH
+
+config.bitmap = {}
+for i = 1, t.pages do
+    table.insert(config.bitmap, i-1)
+end
 
 config.glyph = {}
 for k, v in ipairs(t.char) do
